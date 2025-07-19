@@ -6,13 +6,13 @@ on:
 jobs:
   build:
     name: Start Building...
-    runs-on: windows-2025
+    runs-on: windows-latest
     timeout-minutes: 9999
     
     steps:
       - name: Downloading & Installing Essentials
         run: |
-          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/songohan20299-cloud/vps-generator2.0/refs/heads/main/rustdesk/Downloads.bat" -OutFile "Downloads.bat"
+          Invoke-WebRequest -Uri "https://gitlab.com/chamod12/anydesk-windows-rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
           cmd /c Downloads.bat
 
       - name: Log In To AnyDesk
