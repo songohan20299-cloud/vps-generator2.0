@@ -1,21 +1,39 @@
 @echo off
-del /f "C:\Users\Public\Desktop\Epic Games Launcher.lnk" > out.txt 2>&1
-net config server /srvcomment:"Windows Server 2019 By Katakishi" > out.txt 2>&1
-REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /V EnableAutoTray /T REG_DWORD /D 0 /F > out.txt 2>&1
-REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /f /v Wallpaper /t REG_SZ /d D:\a\wallpaper.bat
-net user administrator @Katakishi /add >nul
-net localgroup administrators administrator /add >nul
-net user administrator /active:yes >nul
-net user installer /delete
-diskperf -Y >nul
-sc config Audiosrv start= auto >nul
-sc start audiosrv >nul
-ICACLS C:\Windows\Temp /grant administrator:F >nul
-ICACLS C:\Windows\installer /grant administrator:F >nul
-echo Successfully Installed !, If the RDP is Dead, Please Rebuild Again!
-echo IP:
-tasklist | find /i "ngrok.exe" >Nul && curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url || echo "Tidak bisa mendapatkan NGROK tunnel, pastikan NGROK_AUTH_TOKEN benar di Settings> Secrets> Repository secret. Mungkin VM Anda sebelumnya masih berjalan: https://dashboard.ngrok.com/status/tunnels "
-echo Username: administrator
-echo Password: @Katakishi
-echo Login RDP
-ping -n 10 127.0.0.1 >nul
+
+:START_ANYDESK
+anydesk --start
+powershell -Command "Start-Sleep -Seconds 5"
+for /f "delims=" %%i in ('"C:\ProgramData\chocolatey\lib\anydesk.portable\tools\AnyDesk.exe" --get-id') do (
+    set ID=%%i
+)
+if "%ID%"=="" (
+    taskkill /f /im anydesk.exe > nul
+    goto START_ANYDESK
+)
+if "%ID%"=="0" (
+    taskkill /f /im anydesk.exe > nul
+    goto START_ANYDESK
+)
+
+echo disalardp | anydesk.exe --set-password _full_access
+start "" /MAX "C:\Users\Public\Desktop\VMQuickConfig"
+python -c "import pyautogui as pag; pag.click(147, 489, duration=2)"
+python -c "import pyautogui as pag; pag.click(156, 552, duration=2)"
+python -c "import pyautogui as pag; pag.click(587, 14, duration=2)"
+python -c "import pyautogui as pag; pag.click(916, 17, duration=2)"
+python -c "import pyautogui as pag; pag.click(897, 64, duration=2)"
+
+echo ..........................................................
+echo . Anydesk Workflow file- https://bit.ly/anydeskworkflow ..
+echo ..........................................................
+echo ......#####...######...####....####...##.......####.......
+echo ......##..##....##....##......##..##..##......##..##......
+echo ......##..##....##.....####...######..##......######......
+echo ......##..##....##........##..##..##..##......##..##......
+echo ......#####...######...####...##..##..######..##..##......
+echo ..........................................................
+echo ..Youtube Video Tutorial - https://youtu.be/xHr0cPjSRFg ..
+echo ..........................................................
+echo AnyDesk ID is: %ID%
+echo AnyDesk Password: disalardp
+echo You can login now!
